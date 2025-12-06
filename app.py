@@ -44,6 +44,9 @@ def build_outlook(payload: MacroInput) -> Dict[str, str]:
         "Alternatives": payload.Alternatives or "low",
     }
 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "Optimizer backend running"}
 
 @app.post("/parse")
 async def parse(data: MacroInput):
