@@ -1,7 +1,20 @@
+import sys
+print("PYTHON VERSION:", sys.version)
+print("STARTING APP IMPORT...")
+
 from datetime import datetime, timezone
 from typing import Dict, Optional
 
 from fastapi import FastAPI
+
+print("IMPORTING fetch_data...")
+from fetch_data import fetch_prices
+
+print("IMPORTING optimizer_engine...")
+from optimizer_engine import run_optimizer
+
+print("APP IMPORT COMPLETED")
+
 from pydantic import BaseModel
 
 from fetch_data import fetch_prices
