@@ -2,12 +2,12 @@
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+from pandas_datareader import data as pdr
 import json
 from datetime import datetime, timedelta, timezone
 from ticker_list import tickers, group_map, groups
 from fetch_data import CACHE_PATH
 import os
-import requests
 
 
 # Qualitative to quantitative bounds
