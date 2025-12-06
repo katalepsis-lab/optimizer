@@ -7,6 +7,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from ticker_list import tickers, group_map, groups
 from fetch_data import CACHE_PATH
+import os
 
 # Qualitative to quantitative bounds
 ranges = {"low": (0.00, 0.10), "medium": (0.10, 0.35), "high": (0.35, 0.70)}
@@ -15,6 +16,9 @@ ranges = {"low": (0.00, 0.10), "medium": (0.10, 0.35), "high": (0.35, 0.70)}
 # Optimizer function
 # ....................................................................
 def run_optimizer(outlook: dict) -> dict:
+    
+    if not os.path.exists(CACHE_PATH):
+        raise FileNotFoundError("No price cache found. Call /refresh_data first.")
     
     # Use for performance evaluation
     start_time = datetime.now()
