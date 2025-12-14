@@ -19,6 +19,6 @@ app = FastAPI(title="Katalepsis Optimizer API")
 @app.get("/")
 def root():
     return {
-        "status":"ok"
+        "status":"ok",
         "service":"optimizer-backend"
     }
