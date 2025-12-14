@@ -3,11 +3,6 @@
 app.py
 
 Defines a FastAPI backend for a macro-driven portfolio optimizer:
-- Exposes endpoints to receive qualitative macro inputs
-- Standardize them into asset-class outlooks
-- Run an optimization engine
-- Refresh market price data
-- Return optimized portfolio results with timestamps and metadata.
 
 
 Katalepsis-lab 2025
@@ -15,6 +10,7 @@ Katalepsis-lab 2025
 from fastapi import FastAPI
 from pydantic import BaseModel
 from datetime import datetime, timezone
+from ai_proposal import generate_proposal
 import uuid
 
 app = FastAPI(title="Katalepsis Optimizer API")
@@ -41,16 +37,15 @@ class ProposalResponse(BaseModel):
 
 
 @app.post("/proposal", response_model=ProposalResponse)
-def proposal(body: ProposalRequest):
+def proposal(data: ProposalRequest):
+    result = generate_proposal(
+        macro_regime=data.macro_regime,
+        api_key=data.api_key
+    )
+
     return {
         "proposal_id": str(uuid.uuid4()),
-        "qualitative_allocations": {
-        "equities": "medium",
-        "bonds": "medium",
-        "commodities": "medium",
-        "cash": "low",
-        "alts": "low"
-    },
-    "justification": "This is the AI justification location",
-    "created_at": datetime.now(timezone.utc).isoformat()
+        "qualitative_allocations": result['qualitative_allocations'],
+        "justification": result['justification'],
+        "created_at": datetime.now(timezone.utc).isoformat()
     }
