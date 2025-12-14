@@ -30,6 +30,16 @@ class OptimizerInput(BaseModel):
     cash: str
     alts: str
 
+class OptimizeResponse(BaseModel):
+    proposal_id: str
+    expected_return: float
+    volatility: float
+    sharpe_ratio: float
+    weights: dict
+    engine_end_time: str
+    engine_duration_sec: float
+
+
 class OptimizeRequest(BaseModel):
     proposal_id: str
     qualitative_allocations: QualitativeAllocation
