@@ -22,3 +22,16 @@ class QualitativeAllocation(BaseModel):
 class ProposalPayload(BaseModel):
     qualitative_allocations: QualitativeAllocation
     justification: str
+
+class OptimizerInput(BaseModel):
+    equities: str
+    bonds: str
+    commodities: str
+    cash: str
+    alts: str
+
+class OptimizeRequest(BaseModel):
+    proposal_id: str
+    qualitative_allocations: QualitativeAllocation
+
+    

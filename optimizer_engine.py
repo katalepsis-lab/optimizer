@@ -1,10 +1,10 @@
 """
 optimizer_engine.py
 
-This file implements the core portfolio optimization logic for the optimizer MVP
-Loads cached price data and computes returns, risk, and correlations
-Converts qualitative macro outlooks into asset-class allocation constraints
-Runs a constrained Sharpe-ratio optimization and returns structured results
+This file implements the core portfolio optimization logic for the optimizer MVP:
+- Loads cached price data and computes returns, risk, and correlations
+- Converts qualitative macro outlooks into asset-class allocation constraints
+- Runs a constrained Sharpe-ratio optimization and returns structured results
 
 Katalepsis-lab 2025
 """
@@ -29,7 +29,7 @@ ranges = {"low": (0.00, 0.10), "medium": (0.10, 0.35), "high": (0.35, 0.70)}
 def run_optimizer(outlook: dict) -> dict:
     
     if not os.path.exists(CACHE_PATH):
-        raise FileNotFoundError("No price cache found. Call /refresh_data first.")
+        raise FileNotFoundError("No price cache found. Call /fetch_data.py first.")
     
     # Use for performance evaluation
     start_time = datetime.now()
@@ -119,11 +119,11 @@ def run_optimizer(outlook: dict) -> dict:
 
 if __name__ == "__main__":
     test_outlook = {
-        "Equities": "low",
-        "Bonds": "high",
-        "Commodities": "high",
-        "Cash": "medium",
-        "Alternatives": "low"
+        "equities": "low",
+        "bonds": "high",
+        "commodities": "high",
+        "cash": "medium",
+        "alts": "low"
     }
     result = run_optimizer(test_outlook)
     print(json.dumps(result, indent=2))

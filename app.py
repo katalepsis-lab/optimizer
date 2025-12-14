@@ -11,6 +11,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from datetime import datetime, timezone
 from ai_proposal import generate_proposal
+from optimizer_engine import run_optimizer
+from schemas import OptimizeRequest
 import uuid
 
 app = FastAPI(title="Katalepsis Optimizer API")
@@ -49,4 +51,13 @@ def proposal(data: ProposalRequest):
         "qualitative_allocations": result.qualitative_allocations.model_dump(),
         "justification": result.justification,
         "created_at": datetime.now(timezone.utc).isoformat()
+    }
+
+@app.post("/optimize")
+def optimize(data: OptimizeRequest):
+    result = run_optimizer(data.qualitative_allocations.model_dump())
+
+    return {
+        "proposal_id": data.proposal_id,
+        "result":result
     }
