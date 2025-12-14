@@ -17,14 +17,14 @@ tickers = [
 
 # Group assignment
 group_map = {
-    **{t: "Equities" for t in [
+    **{t: "equities" for t in [
         "SPY","IWM","QQQ","DIA","ZSP.TO","XIU.TO","EFA","EEM",
         "XLE","XLF","XLV","XLI","XLK","XLC","XLY","XLP","XLRE","XLU","XMA.TO","ZUT.TO","JEPI"
     ]},
-    **{t: "Bonds" for t in ["IEF","TLT","AGG","LQD","HYG","TIP","ZAG.TO","XCB.TO","XBB.TO","VGV.TO","HYDB"]},
-    "SHY": "Cash",
-    **{t: "Commodities" for t in ["GLD","SLV","CPER","DBC","USO","URA","PPL.TO","COW.TO","PDBC","DBMF","PHYS.TO","PSLV.TO"]},
-    **{t: "Alternatives" for t in ["VNQ","XRE.TO","BTC-USD","ETH-USD","U-UN.TO"]}
+    **{t: "bonds" for t in ["IEF","TLT","AGG","LQD","HYG","TIP","ZAG.TO","XCB.TO","XBB.TO","VGV.TO","HYDB"]},
+    "SHY": "cash",
+    **{t: "commodities" for t in ["GLD","SLV","CPER","DBC","USO","URA","PPL.TO","COW.TO","PDBC","DBMF","PHYS.TO","PSLV.TO"]},
+    **{t: "alts" for t in ["VNQ","XRE.TO","BTC-USD","ETH-USD","U-UN.TO"]}
 }
 
-groups = ["Equities", "Bonds", "Commodities", "Cash", "Alternatives"]
+groups = ["equities", "bonds", "commodities", "cash", "alts"]
