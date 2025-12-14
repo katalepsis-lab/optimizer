@@ -38,6 +38,7 @@ class ProposalResponse(BaseModel):
 
 @app.post("/proposal", response_model=ProposalResponse)
 def proposal(data: ProposalRequest):
+    # Feed regime and api, receive allocations and justifications from ai_proposal.py
     result = generate_proposal(
         macro_regime=data.macro_regime,
         api_key=data.api_key
@@ -45,7 +46,7 @@ def proposal(data: ProposalRequest):
 
     return {
         "proposal_id": str(uuid.uuid4()),
-        "qualitative_allocations": result['qualitative_allocations'],
-        "justification": result['justification'],
+        "qualitative_allocations": result.qualitative_allocations.model_dump(),
+        "justification": result.justification,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
