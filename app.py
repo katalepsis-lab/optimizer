@@ -12,8 +12,10 @@ from pydantic import BaseModel
 from datetime import datetime, timezone
 from ai_proposal import generate_proposal
 from optimizer_engine import run_optimizer
+from fetch_data import fetch_prices, CACHE_PATH
 from schemas import OptimizeRequest, OptimizeResponse
 import uuid
+import os
 
 app = FastAPI(title="Katalepsis Optimizer API")
 
@@ -26,12 +28,10 @@ def root():
 
 
 class ProposalRequest(BaseModel):
-    # First message received from front-end
     api_key: str
     macro_regime: str
 
 class ProposalResponse(BaseModel):
-    # First response to front-end
     proposal_id: str
     qualitative_allocations: dict
     justification: str
@@ -40,7 +40,7 @@ class ProposalResponse(BaseModel):
 
 @app.post("/proposal", response_model=ProposalResponse)
 def proposal(data: ProposalRequest):
-    # Feed regime and api, receive allocations and justifications from ai_proposal.py
+    # Feed regime to API, receive allocations and justifications from ai_proposal.py
     try:
         payload = generate_proposal(
             macro_regime=data.macro_regime,
@@ -58,9 +58,31 @@ def proposal(data: ProposalRequest):
 
 @app.post("/optimize", response_model=OptimizeResponse)
 def optimize(data: OptimizeRequest):
+    # Send user validated qualitative asset allocation to optimizer and send back asset weights
     result = run_optimizer(data.qualitative_allocations.model_dump())
 
     return {
         "proposal_id": data.proposal_id,
         "result":result
+    }
+
+@app.post('/refresh_data')
+def refresh_data():
+    try:
+        prices = fetch_prices()
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    if prices is None or prices.empty:
+        raise HTTPException(
+            status_code=500,
+            detail='Price fetch failed or return empty dataset'
+        )
+    
+    return {
+        "status": "success",
+        "rows": prices.shape[0],
+        "tickers": prices.shape[1],
+        "cache_path": CACHE_PATH,
     }
