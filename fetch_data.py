@@ -1,3 +1,13 @@
+"""
+fetch_data.py
+
+This file is used to retrieve the data necessary for the optimizer MVP
+Retrieves the tickers from the ticker_list.py file
+Saves the data in a cached file under the /data folder
+
+Katalepsis-lab 2025
+"""
+
 
 import yfinance as yf
 import pandas as pd
@@ -20,7 +30,7 @@ CACHE_PATH = os.path.join(DATA_DIR, "prices_cache.parquet") # This variable is r
 # Fetch & cache function
 # ....................................................................
 def fetch_prices(save_path=CACHE_PATH, years=9):
-    """Download and cache multi-asset price data with retry protection."""
+    # Download and cache multi-asset price data with retry protection.
     end = datetime.today()
     start = end - timedelta(days=years * 365 + 30)
     chunk_size = 10 # Chunking download to prevent throttling issues
