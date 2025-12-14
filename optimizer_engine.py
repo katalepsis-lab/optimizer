@@ -6,7 +6,7 @@ This file implements the core portfolio optimization logic for the optimizer MVP
 - Converts qualitative macro outlooks into asset-class allocation constraints
 - Runs a constrained Sharpe-ratio optimization and returns structured results
 
-Katalepsis-lab 2025
+@Katalepsis-Lab 2025
 """
 
 import numpy as np

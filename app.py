@@ -4,8 +4,23 @@ app.py
 
 Defines a FastAPI backend for a macro-driven portfolio optimizer:
 
+Initializes a FastAPI backend for the optimizer
 
-Katalepsis-lab 2025
+Provides a health-check root endpoint
+
+Exposes /proposal to generate AI-driven qualitative allocations and justification
+
+Assigns a unique proposal ID and timestamp
+
+Exposes /optimize to run the portfolio optimizer on validated inputs
+
+Standardizes optimizer outputs via response models
+
+Exposes /refresh_data to refresh and report cached market data
+
+Uses HTTP exceptions for error handling
+
+@Katalepsis-Lab 2025
 """
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel

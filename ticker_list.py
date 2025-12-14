@@ -1,6 +1,18 @@
-# ....................................................................
-# 50 tickers for MVP
-# ....................................................................
+"""
+ticker_list.py
+
+Defines the fixed ticker universe used in the MVP
+
+Covers equities, bonds, cash proxies, commodities, and alternatives
+
+Includes US and Canadian ETFs plus selected crypto and real assets
+
+Maps each ticker to a single asset class via group_map
+
+Defines the canonical list of asset class groups for the optimizer
+
+@Katalepsis-Lab 2025
+"""
 
 tickers = [
 # Equities

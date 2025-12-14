@@ -1,3 +1,18 @@
+"""
+ai_proposal.py
+
+Defines a strict system prompt that frames the model as a macro portfolio strategist
+Constrains outputs to qualitative allocations using only low, medium, or high
+Forces coverage of all asset classes exactly once
+Provides an explicit input–output example to anchor the response format
+Calls the OpenAI Chat Completions API with low temperature for consistency
+Accepts a macro regime description as input
+Returns a validated ProposalPayload by parsing model JSON through Pydantic
+
+Katalepsis-lab 2025
+
+"""
+
 from typing import Dict, List
 from schemas import ProposalPayload
 from openai import OpenAI

@@ -1,3 +1,28 @@
+"""
+schemas.py
+
+Defines allowed qualitative buckets and asset class names as global constants
+
+Implements QualitativeAllocation to enforce valid low, medium, high values per asset class
+
+Uses a wildcard Pydantic field validator to validate all asset class fields uniformly
+
+Raises explicit validation errors for invalid qualitative inputs
+
+Defines ProposalPayload to bundle qualitative allocations with a macro justification
+
+Defines OptimizerInput as a flat qualitative allocation structure for downstream processing
+
+Defines OptimizeRequest to pass a proposal ID with validated qualitative allocations into the optimizer
+
+Defines OptimizeResponse to standardize optimizer outputs including risk metrics, weights, and timing metadata
+
+
+@Katalepsis-Lab 2025
+"""
+
+
+
 from pydantic import BaseModel, field_validator
 
 ALLOWED_BUCKETS = {'low', 'medium', 'high'}

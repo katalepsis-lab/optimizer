@@ -5,7 +5,7 @@ This file is used to retrieve the data necessary for the optimizer MVP
 Retrieves the tickers from the ticker_list.py file
 Saves the data in a cached file under the /data folder
 
-Katalepsis-lab 2025
+@Katalepsis-Lab 2025
 """
 
 
