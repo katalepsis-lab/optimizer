@@ -23,6 +23,7 @@ Uses HTTP exceptions for error handling
 @Katalepsis-Lab 2025
 """
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime, timezone
 from ai_proposal import generate_proposal
@@ -33,6 +34,14 @@ import uuid
 import os
 
 app = FastAPI(title="Katalepsis Optimizer API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://katalepsis-lab.github.io"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
