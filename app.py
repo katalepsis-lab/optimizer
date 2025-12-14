@@ -11,8 +11,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from datetime import datetime, timezone
 from ai_proposal import generate_proposal
-from optimizer_engine import run_optimizer
 from fetch_data import fetch_prices, CACHE_PATH
+from optimizer_engine import run_optimizer
 from schemas import OptimizeRequest, OptimizeResponse
 import uuid
 import os
@@ -63,14 +63,14 @@ def optimize(data: OptimizeRequest):
 
     return {
         "proposal_id": data.proposal_id,
-        "result":result
+        **result
     }
 
 @app.post('/refresh_data')
 def refresh_data():
     try:
         prices = fetch_prices()
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
