@@ -81,6 +81,13 @@ def generate_proposal(macro_regime: str, api_key: str) -> ProposalPayload:
         temperature=0.2
     )
 
-    content = response.content[0].text
+    content = response.content[0].text.strip()
+
+    # Strip markdown code fences if the model wraps its output
+    if content.startswith("```"):
+        content = content.split("```")[1]
+        if content.startswith("json"):
+            content = content[4:]
+        content = content.strip()
 
     return ProposalPayload.model_validate_json(content)
