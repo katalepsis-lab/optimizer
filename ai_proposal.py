@@ -5,7 +5,7 @@ Defines a strict system prompt that frames the model as a macro portfolio strate
 Constrains outputs to qualitative allocations using only low, medium, or high
 Forces coverage of all asset classes exactly once
 Provides an explicit input–output example to anchor the response format
-Calls the OpenAI Chat Completions API with low temperature for consistency
+Calls the Anthropic Messages API with low temperature for consistency
 Accepts a macro regime description as input
 Returns a validated ProposalPayload by parsing model JSON through Pydantic
 
@@ -13,9 +13,8 @@ Katalepsis-lab 2025
 
 """
 
-from typing import Dict, List
 from schemas import ProposalPayload
-from openai import OpenAI
+import anthropic
 
 SYSTEM_PROMPT = """
 You are an expert macro portfolio strategist with decades of experience in asset allocation.
@@ -69,19 +68,19 @@ Example output:
 """
 
 def generate_proposal(macro_regime: str, api_key: str) -> ProposalPayload:
-    # Calls OpenAI and returns a strictly formatted qualitative allocation plus justificaiton
-    client = OpenAI(api_key=api_key)
+    # Calls Anthropic and returns a strictly formatted qualitative allocation plus justification
+    client = anthropic.Anthropic(api_key=api_key)
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+    response = client.messages.create(
+        model="claude-haiku-4-5",
+        max_tokens=512,
+        system=SYSTEM_PROMPT + EXAMPLE,
         messages=[
-            {'role': 'system', 'content': SYSTEM_PROMPT},
-            {'role': 'system', 'content': EXAMPLE},
-            {'role': 'user', 'content': macro_regime}
+            {"role": "user", "content": macro_regime}
         ],
         temperature=0.2
     )
-    
-    content = response.choices[0].message.content
+
+    content = response.content[0].text
 
     return ProposalPayload.model_validate_json(content)

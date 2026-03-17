@@ -15,16 +15,17 @@ Defines the canonical list of asset class groups for the optimizer
 """
 
 tickers = [
-# Equities
+    # Equities
     "SPY","IWM","QQQ","DIA","ZSP.TO","XIU.TO","EFA","EEM",
+    "XLE","XLF","XLV","XLI","XLK","XLC","XLY","XLP","XLRE","XLU","XMA.TO","ZUT.TO","JEPI",
     # Bonds
-    "XLE","XLF","XLV","XLI","XLK","XLC","XLY","XLP","XLRE","XLU","XMA.TO","ZUT.TO",
+    "IEF","TLT","AGG","LQD","HYG","TIP","ZAG.TO","XCB.TO","XBB.TO","VGV.TO","HYDB",
     # Cash
-    "IEF","TLT","SHY","AGG","LQD","HYG","TIP","ZAG.TO","XCB.TO","XBB.TO","VGV.TO","HYDB",
+    "SHY",
     # Commodities
-    "GLD","SLV","CPER","DBC","USO","URA","PPL.TO","COW.TO","PSLV.TO","PHYS.TO","U-UN.TO",
+    "GLD","SLV","CPER","DBC","USO","URA","PPL.TO","COW.TO","PDBC","DBMF","PHYS.TO","PSLV.TO",
     # Alternatives
-    "VNQ","XRE.TO","BTC-USD","ETH-USD","DBMF","PDBC","JEPI"
+    "VNQ","XRE.TO","BTC-USD","ETH-USD","U-UN.TO"
 ]
 
 # Group assignment

@@ -11,8 +11,6 @@ Raises explicit validation errors for invalid qualitative inputs
 
 Defines ProposalPayload to bundle qualitative allocations with a macro justification
 
-Defines OptimizerInput as a flat qualitative allocation structure for downstream processing
-
 Defines OptimizeRequest to pass a proposal ID with validated qualitative allocations into the optimizer
 
 Defines OptimizeResponse to standardize optimizer outputs including risk metrics, weights, and timing metadata
@@ -26,7 +24,6 @@ Defines OptimizeResponse to standardize optimizer outputs including risk metrics
 from pydantic import BaseModel, field_validator
 
 ALLOWED_BUCKETS = {'low', 'medium', 'high'}
-ASSET_CLASSES = {'equities', 'bonds', 'commodities', 'cash', 'alts'}
 
 class QualitativeAllocation(BaseModel):
     # validating response for each asset class
@@ -48,12 +45,6 @@ class ProposalPayload(BaseModel):
     qualitative_allocations: QualitativeAllocation
     justification: str
 
-class OptimizerInput(BaseModel):
-    equities: str
-    bonds: str
-    commodities: str
-    cash: str
-    alts: str
 
 class OptimizeResponse(BaseModel):
     proposal_id: str
@@ -63,6 +54,7 @@ class OptimizeResponse(BaseModel):
     weights: dict
     engine_end_time: str
     engine_duration_sec: float
+    rf_fallback_used: bool
 
 
 class OptimizeRequest(BaseModel):

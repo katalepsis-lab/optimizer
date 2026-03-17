@@ -9,6 +9,8 @@ This file implements the core portfolio optimization logic for the optimizer MVP
 @Katalepsis-Lab 2025
 """
 
+RF_FALLBACK = 0.05   # Used when FRED is unavailable; update periodically
+
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
@@ -44,15 +46,36 @@ def run_optimizer(outlook: dict) -> dict:
     mu = returns.mean() * 252           # Yearly mean returns
     sigma = returns.cov() * 252         # Yearly covariance matrix
 
-    # Risk-free rate from FRED
-    end = datetime.today()
-    start = end - timedelta(days=30)
-    rf_df = pdr.DataReader("DTB3", "fred", start, end)
-    rf = rf_df.iloc[-1, 0] / 100
-    print(f"Risk-free rate (3-month T-bill): {rf:.2%}")
+    # Risk-free rate from FRED (falls back to RF_FALLBACK if unavailable)
+    rf_fallback_used = False
+    try:
+        end = datetime.today()
+        start = end - timedelta(days=30)
+        rf_df = pdr.DataReader("DTB3", "fred", start, end)
+        rf = rf_df.iloc[-1, 0] / 100
+        print(f"Risk-free rate (3-month T-bill): {rf:.2%}")
+    except Exception as e:
+        rf = RF_FALLBACK
+        rf_fallback_used = True
+        print(f"WARNING: FRED unavailable ({e}). Using fallback risk-free rate: {rf:.2%}")
 
     # Convert qualitative outlook to min/max bounds per asset-class
     group_bounds = {g: ranges[outlook[g]] for g in groups}
+
+    # Feasibility check: if sum of lower bounds > 100%, scale them down proportionally
+    total_min = sum(group_bounds[g][0] for g in groups)
+    if total_min > 1.0:
+        scale = 0.99 / total_min
+        group_bounds = {g: (group_bounds[g][0] * scale, group_bounds[g][1]) for g in groups}
+        print(f"WARNING: Lower bounds summed to {total_min:.2%} — scaled down by {scale:.4f} to remain feasible.")
+
+    # Feasibility check: if sum of upper bounds < 100%, scale them up proportionally
+    total_max = sum(group_bounds[g][1] for g in groups)
+    if total_max < 1.0:
+        scale = 1.01 / total_max
+        group_bounds = {g: (group_bounds[g][0], group_bounds[g][1] * scale) for g in groups}
+        print(f"WARNING: Upper bounds summed to {total_max:.2%} — scaled up by {scale:.4f} to remain feasible.")
+
     print("Group bounds:")
     for g in groups:
         print(f"  {g:12s}: {group_bounds[g][0]*100:5.1f}% - {group_bounds[g][1]*100:5.1f}%")
@@ -69,6 +92,8 @@ def run_optimizer(outlook: dict) -> dict:
     def neg_sharpe(w):
         r = np.dot(w, mu_vec)
         v = np.sqrt(np.dot(w, sigma_mat @ w))
+        if v < 1e-8:
+            return 0.0
         return -(r - rf) / v
 
     # Constraints
@@ -77,7 +102,7 @@ def run_optimizer(outlook: dict) -> dict:
     for g in groups:
         members = idx[g]
         if len(members) == 0:
-            print(f"⚠️ No data for group {g}")
+            print(f"WARNING: No data for group {g}")
             continue
         min_, max_ = group_bounds[g]
         constraints.append({"type": "ineq", "fun": lambda w, I=members, lb=min_: np.sum(w[I]) - lb})    # Weights within class above lb
@@ -88,6 +113,9 @@ def run_optimizer(outlook: dict) -> dict:
     
     result = minimize(neg_sharpe, x0, bounds=bounds, constraints=constraints,
                       method="SLSQP", options={"maxiter": 5000, "disp": True})
+
+    if not result.success:
+        raise RuntimeError(f"Optimizer failed to converge: {result.message}")
 
     # Gathering optimization output
     w_opt = pd.Series(result.x, index=prices.columns)
@@ -107,7 +135,8 @@ def run_optimizer(outlook: dict) -> dict:
         "sharpe_ratio": round(pf_sharpe, 3),
         "weights": w_opt[w_opt > 1e-4].round(3).to_dict(),
         "engine_end_time": end_time.isoformat(),
-        "engine_duration_sec": round(duration, 3)
+        "engine_duration_sec": round(duration, 3),
+        "rf_fallback_used": rf_fallback_used
     }
 
     return result_json

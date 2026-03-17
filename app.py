@@ -83,7 +83,10 @@ def proposal(data: ProposalRequest):
 @app.post("/optimize", response_model=OptimizeResponse)
 def optimize(data: OptimizeRequest):
     # Send user validated qualitative asset allocation to optimizer and send back asset weights
-    result = run_optimizer(data.qualitative_allocations.model_dump())
+    try:
+        result = run_optimizer(data.qualitative_allocations.model_dump())
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
     return {
         "proposal_id": data.proposal_id,

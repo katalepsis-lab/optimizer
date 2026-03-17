@@ -67,7 +67,7 @@ def fetch_prices(save_path=CACHE_PATH, years=9):
             except Exception as e:
                 attempt += 1
                 wait_time = 5 * attempt 
-                print(f"⚠️ Attempt {attempt} failed for {subset}: {e}. Retrying in {wait_time} seconds...")
+                print(f"WARNING: Attempt {attempt} failed for {subset}: {e}. Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
 
         # Waiting between batches to prevent throttling
@@ -82,7 +82,7 @@ def fetch_prices(save_path=CACHE_PATH, years=9):
     prices = prices.reindex(columns=tickers).dropna(axis=1, how="all")
 
     prices.to_parquet(save_path, compression="zstd")
-    print(f"\n✅ Saved {prices.shape[1]} tickers to {save_path}")
+    print(f"\nSaved {prices.shape[1]} tickers to {save_path}")
     return prices
 
 
