@@ -28,7 +28,7 @@ ranges = {"low": (0.00, 0.10), "medium": (0.10, 0.35), "high": (0.35, 0.70)}
 # ....................................................................
 # Optimizer function
 # ....................................................................
-def run_optimizer(outlook: dict) -> dict:
+def run_optimizer(outlook: dict, lookback_years: int = None, lookback_start: str = None, lookback_end: str = None) -> dict:
     
     if not os.path.exists(CACHE_PATH):
         raise FileNotFoundError("No price cache found. Call /fetch_data.py first.")
@@ -40,6 +40,17 @@ def run_optimizer(outlook: dict) -> dict:
     # Load cached data
     prices = pd.read_parquet(CACHE_PATH)
     print(f"\n Loaded cached data with {prices.shape[1]} tickers and {prices.shape[0]} rows.")
+
+    # Apply lookback filter
+    if lookback_years:
+        cutoff = pd.Timestamp.today() - pd.DateOffset(years=lookback_years)
+        prices = prices[prices.index >= cutoff]
+    elif lookback_start or lookback_end:
+        if lookback_start:
+            prices = prices[prices.index >= pd.Timestamp(lookback_start)]
+        if lookback_end:
+            prices = prices[prices.index <= pd.Timestamp(lookback_end)]
+    print(f"Lookback window: {prices.index[0].date()} to {prices.index[-1].date()} ({prices.shape[0]} rows)")
 
     # Compute returns, covariance, and expected returns
     returns = prices.pct_change(fill_method=None).dropna(how="all").fillna(0)

@@ -22,6 +22,7 @@ Defines OptimizeResponse to standardize optimizer outputs including risk metrics
 
 
 from pydantic import BaseModel, field_validator
+from typing import Optional
 
 ALLOWED_BUCKETS = {'low', 'medium', 'high'}
 
@@ -60,5 +61,8 @@ class OptimizeResponse(BaseModel):
 class OptimizeRequest(BaseModel):
     proposal_id: str
     qualitative_allocations: QualitativeAllocation
+    lookback_years: Optional[int] = None    # e.g. 3 → last 3 years from today
+    lookback_start: Optional[str] = None   # ISO date string e.g. "2020-01-01"
+    lookback_end: Optional[str] = None     # ISO date string e.g. "2024-12-31"
 
     

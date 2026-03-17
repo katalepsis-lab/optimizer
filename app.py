@@ -84,7 +84,12 @@ def proposal(data: ProposalRequest):
 def optimize(data: OptimizeRequest):
     # Send user validated qualitative asset allocation to optimizer and send back asset weights
     try:
-        result = run_optimizer(data.qualitative_allocations.model_dump())
+        result = run_optimizer(
+            data.qualitative_allocations.model_dump(),
+            lookback_years=data.lookback_years,
+            lookback_start=data.lookback_start,
+            lookback_end=data.lookback_end
+        )
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
 
